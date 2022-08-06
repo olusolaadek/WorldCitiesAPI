@@ -21,7 +21,7 @@ namespace WorldCitiesAPI.Controllers
             this.context = context;
             this.env = env;
         }
-
+        [HttpGet]
         public async Task<ActionResult> Import()
         {
             if (!env.IsDevelopment())
