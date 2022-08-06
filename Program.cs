@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
 using WorldCitiesAPI.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,5 +36,8 @@ app.UseCors(corsapp);
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Install-Package EPPlus 
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
 app.Run();
