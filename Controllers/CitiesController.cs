@@ -23,9 +23,10 @@ namespace WorldCitiesAPI.Controllers
 
         // GET: api/Cities
         [HttpGet]
-        public async Task<ActionResult<ApiResult<City>>> GetCities(int pageIndex = 0, int pageSize = 10,
+        public async Task<ActionResult<ApiResult<City>>> GetCities(
+            int pageIndex = 0, int pageSize = 10,
             string? sortColumn = null, string? sortOrder = null,
-             string? filterColumn, string? filterQuery)
+             string? filterColumn = null, string? filterQuery = null)
         {
             // add paging
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace WorldCitiesAPI.Data.Models
 {
@@ -8,6 +9,7 @@ namespace WorldCitiesAPI.Data.Models
     [Index(nameof(Name))]
     [Index(nameof(ISO2))]
     [Index(nameof(ISO3))]
+
     public class Country
     {
         #region Properties
@@ -25,10 +27,12 @@ namespace WorldCitiesAPI.Data.Models
         /// <summary>
         /// Country code (in ISO 3166-1 ALPHA-2 format)
         /// </summary>
+        [JsonPropertyName("iso2")]
         public string ISO2 { get; set; } = null!;
         /// <summary>
         /// Country code (in ISO 3166-1 ALPHA-3 format)
         /// </summary>
+        [JsonPropertyName("iso3")]
         public string ISO3 { get; set; } = null!;
 
         /// <summary>

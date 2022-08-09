@@ -57,7 +57,7 @@ namespace WorldCitiesAPI.Controllers
                 var row = worksheet.Cells[nRow, 1, nRow, worksheet.Dimension.End.Column];
                 var countryName = row[nRow, 5].GetValue<string>();
                 var iso2 = row[nRow, 6].GetValue<string>();
-                var is03 = row[nRow, 7].GetValue<string>();
+                var iso3 = row[nRow, 7].GetValue<string>();
 
                 // skip this country if it already exists in the database
                 if (countriesByName.ContainsKey(countryName))
@@ -68,7 +68,7 @@ namespace WorldCitiesAPI.Controllers
                 var country = new Country
                 {
                     ISO2 = iso2,
-                    ISO3 = iso2,
+                    ISO3 = iso3,
                     Name = countryName,
                 };
                 // add the new country to the DB context
