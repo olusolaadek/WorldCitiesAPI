@@ -24,7 +24,8 @@ namespace WorldCitiesAPI.Controllers
         // GET: api/Cities
         [HttpGet]
         public async Task<ActionResult<ApiResult<City>>> GetCities(int pageIndex = 0, int pageSize = 10,
-            string? sortColumn = null, string? sortOrder = null)
+            string? sortColumn = null, string? sortOrder = null,
+             string? filterColumn, string? filterQuery)
         {
             // add paging
 
@@ -34,8 +35,11 @@ namespace WorldCitiesAPI.Controllers
                 return NotFound(); // PEN210104041793
             }
             return await ApiResult<City>.CreateAsync(_context.Cities.AsNoTracking(),
-                pageIndex, pageSize, sortColumn, sortOrder);
-            //return await _context.Cities
+                pageIndex, pageSize,
+                sortColumn, sortOrder,
+                filterColumn, filterQuery
+                );
+            //return await _context.Citiesloa
             //    .Skip(pageSize * pageSize)
             //    .Take(pageSize)
             //    .ToListAsync(); // Take(100).

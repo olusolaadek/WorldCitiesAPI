@@ -12,7 +12,9 @@ namespace WorldCitiesAPI.Data
         //private int TotalPages;
 
         private ApiResult(List<T> data, int count,
-            int pageIndex, int pageSize, string? sortColumn, string? sortOrder
+            int pageIndex, int pageSize, string?
+            sortColumn, string? sortOrder,
+            string? filterColumn, string? filterQuery
             )
         {
             Data = data;
@@ -22,6 +24,8 @@ namespace WorldCitiesAPI.Data
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
             SortColumn = sortColumn;
             SortOrder = sortOrder;
+            FilterColumn = filterColumn;
+            FilterQuery = filterQuery;
         }
 
         public List<T> Data { get; private set; }
@@ -32,6 +36,8 @@ namespace WorldCitiesAPI.Data
         public string? SortColumn { get; private set; }
 
         public string? SortOrder { get; private set; }
+        public string? FilterColumn { get; private set; }
+        public string? FilterQuery { get; private set; }
 
         public bool HasPreviousPage
         {
@@ -50,9 +56,18 @@ namespace WorldCitiesAPI.Data
             int pageIndex,
             int pageSize,
             string? sortColumn = null,
-            string? sortOrder = null
+            string? sortOrder = null,
+            string? filterColumn = null,
+            string? filterQuery = null
             )
         {
+            if (!string.IsNullOrEmpty(filterColumn) && !string.IsNullOrEmpty(filterQuery)
+                && IsValidProperty(filterColumn)
+                )
+            {
+                source = source.Where(string.Format($"{0}.StartsWith(@0)",
+                    filterColumn, filterQuery));
+            }
             var count = await source.CountAsync();
 
             if (!string.IsNullOrEmpty(sortColumn) && IsValidProperty(sortColumn))
@@ -68,7 +83,7 @@ namespace WorldCitiesAPI.Data
             var data = await source.ToListAsync();
 
             return new ApiResult<T>(data, count, pageIndex,
-                pageSize, sortColumn, sortOrder);
+                pageSize, sortColumn, sortOrder, filterColumn, filterQuery);
         }
 
         private static bool IsValidProperty(string propertyName, bool throwExceptionIfNotFound = true)
