@@ -82,7 +82,7 @@ namespace WorldCitiesAPI.Data
                     string.Format("{0} {1}", sortColumn, sortOrder));
 
             }
-
+            source.Take(100);
             source = source.Skip(pageIndex * pageSize).Take(pageSize);
             var data = await source.ToListAsync();
 
@@ -90,7 +90,7 @@ namespace WorldCitiesAPI.Data
                 pageSize, sortColumn, sortOrder, filterColumn, filterQuery);
         }
 
-        private static bool IsValidProperty(string propertyName, bool throwExceptionIfNotFound = true)
+        public static bool IsValidProperty(string propertyName, bool throwExceptionIfNotFound = true)
         {
             var prop = typeof(T).GetProperty(propertyName,
                 BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance
