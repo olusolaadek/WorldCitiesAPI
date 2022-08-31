@@ -43,12 +43,14 @@ namespace WorldCitiesAPI.Data.Models
         /// The number of cities related to this country.
         /// </summary>
         /// 
-
+        [NotMapped]
+        // [JsonPropertyName("totCities")]
         public int TotCities
         {
             get
             {
-                return Cities?.Count ?? 0;
+                return (Cities != null) ? Cities.Count : _TotCities;
+                // return Cities?.Count ?? 0;
             }
             set
             {
