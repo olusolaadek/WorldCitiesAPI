@@ -122,7 +122,7 @@ app.UseHttpsRedirection();
 
 app.UseCors(corsapp);
 
-app.UseAuthorization();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>

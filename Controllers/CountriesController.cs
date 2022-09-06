@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using WorldCitiesAPI.Data;
 using WorldCitiesAPI.Data.Models;
 
@@ -71,6 +72,7 @@ namespace WorldCitiesAPI.Controllers
         // PUT: api/Countries/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize(Roles = "RegisteredUser")]
         public async Task<IActionResult> PutCountry(int id, Country country)
         {
             if (id != country.Id)
@@ -102,6 +104,7 @@ namespace WorldCitiesAPI.Controllers
         // POST: api/Countries
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = "RegisteredUser")]
         public async Task<ActionResult<Country>> PostCountry(Country country)
         {
             if (_context.Countries == null)
@@ -116,6 +119,7 @@ namespace WorldCitiesAPI.Controllers
 
         // DELETE: api/Countries/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteCountry(int id)
         {
             if (_context.Countries == null)
