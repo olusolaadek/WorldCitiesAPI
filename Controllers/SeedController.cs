@@ -14,7 +14,7 @@ namespace WorldCitiesAPI.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [Authorize(Roles = "Administrator")]
+    // [Authorize(Roles = "Administrator")]
     public class SeedController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -63,10 +63,12 @@ namespace WorldCitiesAPI.Controllers
             // check if the admin user already exists
 
             var email_Admin = "admin@email.com";
+            var user_Admin = new ApplicationUser();
+
             if (await _userManager.FindByNameAsync(email_Admin) == null)
             {
                 // create a new admin ApplicationUser account
-                var user_Admin = new ApplicationUser()
+                user_Admin = new ApplicationUser()
                 {
                     SecurityStamp = Guid.NewGuid().ToString(),
                     UserName = email_Admin,
@@ -75,13 +77,14 @@ namespace WorldCitiesAPI.Controllers
 
                 // insert the admin user into the DB
 
+                string adminPw = _configuration["DefaultPasswords:Administrator"];
                 await _userManager.CreateAsync(user_Admin,
-                    _configuration["DefaultPasswords:Administrator"]);
+                    adminPw);
 
                 // assign the "RegisteredUser" and Administrator roles to admin user
 
-                await _userManager.AddToRoleAsync(user_Admin, role_RegisteredUser);
-                await _userManager.AddToRoleAsync(user_Admin, role_Administrator);
+                //await _userManager.AddToRoleAsync(user_Admin, role_RegisteredUser);
+                //await _userManager.AddToRoleAsync(user_Admin, role_Administrator);
 
                 // confirm the email and remove lockout
                 user_Admin.EmailConfirmed = true;
@@ -90,16 +93,19 @@ namespace WorldCitiesAPI.Controllers
                 // add admin user to the added users list
 
                 addedUserList.Add(user_Admin);
-
+                if (addedUserList.Count > 0)
+                    await _context.SaveChangesAsync();
 
             }
 
             // check if the standard user already exists
-            var email_User = "user@email.com";
+            var email_User = "admin@email.com";
+            var user_User = new ApplicationUser();
+
             if (await _userManager.FindByNameAsync(email_User) == null)
             {
                 // create a new standard ApplicationUser account
-                var user_User = new ApplicationUser()
+                user_User = new ApplicationUser()
                 {
                     SecurityStamp = Guid.NewGuid().ToString(),
                     UserName = email_User,
@@ -109,8 +115,9 @@ namespace WorldCitiesAPI.Controllers
                 await _userManager.CreateAsync(user_User,
                     _configuration["DefaultPasswords:RegisteredUser"]);
                 // assign the "RegisteredUser" role
-                await _userManager.AddToRoleAsync(user_User,
-                role_RegisteredUser);
+                await _userManager.AddToRoleAsync(user_User, role_RegisteredUser);
+                await _userManager.AddToRoleAsync(user_User, role_Administrator);
+
                 // confirm the e-mail and remove lockout
                 user_User.EmailConfirmed = true;
                 user_User.LockoutEnabled = false;
@@ -121,6 +128,14 @@ namespace WorldCitiesAPI.Controllers
             // if we added at least one user, persist the changes into the DB
             if (addedUserList.Count > 0)
                 await _context.SaveChangesAsync();
+
+            // Add roles
+            // Add roles to admin user
+            //await _userManager.AddToRoleAsync(user_Admin, role_RegisteredUser);
+            //await _userManager.AddToRoleAsync(user_Admin, role_Administrator);
+            // Add role to user_User
+            //await _userManager.AddToRoleAsync(user_User, role_RegisteredUser);
+
 
             return new JsonResult(new
             {

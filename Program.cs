@@ -9,6 +9,7 @@ using WorldCitiesAPI.Data.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Cors;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,10 +56,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //services cors
-var corsapp = "corsapp";
-builder.Services.AddCors(p => p.AddPolicy(corsapp, builder =>
+var corsapp = "AngularPolicy";
+builder.Services.AddCors(options => options.AddPolicy(corsapp, cfg =>
 {
-    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+    cfg.AllowAnyMethod().AllowAnyHeader();
+    cfg.WithOrigins(builder.Configuration["AllowedCORS"]);
 }));
 // Add ApplicationDbContext and SQL Server support
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -131,9 +133,13 @@ app.UseEndpoints(endpoints =>
     name: "default",
             pattern: "{controller=Logs}/{action=Index}/{id?}");
 });
+
 app.MapControllers();
 
 // Install-Package EPPlus 
 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+app.MapMethods("/api/heartbeat", new[] { "HEAD" },
+() => Results.Ok());
 
 app.Run();
