@@ -10,6 +10,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Cors;
+using WorldCitiesAPI.Data.GraphQL;
+using HotChocolate;
+using HotChocolate.AspNetCore.Serialization;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -83,6 +88,17 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(
 
 builder.Services.AddScoped<JwtHandler>();
 
+// Add support for GraphQL
+builder.Services.AddGraphQLServer()
+    .AddAuthorization()
+    .AddQueryType<Query>()
+    .AddMutationType<Mutation>()
+   // .AddSubscriptionType<Object>()
+    .AddFiltering().
+    AddSorting();
+
+
+
 // Add Authentication services & middlewares
 builder.Services.AddAuthentication(opt =>
 {
@@ -119,7 +135,6 @@ if (app.Environment.IsDevelopment())
 //app.UseMvc();
 app.UseRouting();
 
-
 app.UseHttpsRedirection();
 
 app.UseCors(corsapp);
@@ -127,14 +142,25 @@ app.UseCors(corsapp);
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllerRoute(
-    name: "default",
-            pattern: "{controller=Logs}/{action=Index}/{id?}");
-});
+//app.UseEndpoints(endpoints =>
+//{
+//    endpoints.MapControllerRoute(
+//    name: "default",
+//            pattern: "{controller=Logs}/{action=Index}/{id?}");
+
+//});
+
 
 app.MapControllers();
+app.MapGraphQL("/api/graphql");
+
+// app.MapGraphQL();
+// app.MapGraphQL("/api/graphql");
+//app.UseRouting()
+//    .UseEndpoints(endpoints =>
+//    {
+//        endpoints.MapGraphQL();
+//    });
 
 // Install-Package EPPlus 
 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;

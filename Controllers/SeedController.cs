@@ -9,6 +9,7 @@ using System.Security;
 using WorldCitiesAPI.Data;
 using WorldCitiesAPI.Data.Models;
 using Microsoft.AspNetCore.Authorization;
+using Path = System.IO.Path;
 
 namespace WorldCitiesAPI.Controllers
 {
